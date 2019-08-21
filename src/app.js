@@ -1,6 +1,8 @@
 import React from 'react';
 import Web3 from 'web3';
 import {TODO_LIST_ADDRESS, TODO_LIST_ABI} from './config';
+import TodoCard from './components/TodoCard';
+
 class App extends React.Component {
     constructor(props){
         super(props);
@@ -25,8 +27,6 @@ class App extends React.Component {
         });
       
         const count = await todoContract.methods.taskCount().call();
-        console.log(count);
-       
         for(let i = 1; i<= count; i++){
             const task = await todoContract.methods.tasks(i).call();
             this.setState({tasks: [...this.state.tasks, task]});
@@ -39,6 +39,9 @@ class App extends React.Component {
             <div>
                 <h1>Hello!</h1>
                 <h3>Connected to Contract: {TODO_LIST_ADDRESS} </h3>
+                <div className="todos" style={{border: '1px solid red'}}>
+                    {this.state.tasks.map(todo => (<TodoCard todo={todo} key={`todo${todo.id}`} />))}
+                </div>
             </div>
         )
     }
