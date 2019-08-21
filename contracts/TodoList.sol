@@ -15,7 +15,7 @@ contract TodoList{
         createTask("default task");
     }
 
-    event TaskCreated(
+    event TaskCreatedEvent(
         uint id,
         string content,
         bool completed
@@ -24,10 +24,10 @@ contract TodoList{
     function createTask(string memory _content) public {
         taskCount++;
         tasks[taskCount] = Task(taskCount, _content, false);
-        emit TaskCreated(taskCount, _content, false);
+        emit TaskCreatedEvent(taskCount, _content, false);
     }
 
-    event TaskCompleted(
+    event TaskCompletedEvent(
         uint id,
         bool completed
     );
@@ -36,6 +36,6 @@ contract TodoList{
         Task memory _task = tasks[_id];
         _task.completed = !_task.completed;
         tasks[_id] = _task;
-        emit TaskCompleted(_id, _task.completed);
+        emit TaskCompletedEvent(_id, _task.completed);
     }    
 }
