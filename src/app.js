@@ -8,7 +8,7 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            tasks: []
+            tasks: [{id: 69, completed: true, content: "done"}]
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -36,9 +36,15 @@ class App extends React.Component {
     render(){
        console.log(this.state.tasks)
         return (
-            <div>
+            <div className="container">
                 <h1>Hello!</h1>
-                <h3>Connected to Contract: {TODO_LIST_ADDRESS} </h3>
+                <div style={{display: 'flex'}}>
+                    <h4>Connected to Contract:</h4>
+                    <h4 className="hash" style={{paddingLeft: '1em'}}>{TODO_LIST_ADDRESS} </h4>
+                </div>
+              
+                <br/>
+                <h2>To Do:</h2>
                 <div className="todos" style={{border: '1px solid red'}}>
                     {this.state.tasks.map(todo => (<TodoCard todo={todo} key={`todo${todo.id}`} />))}
                 </div>
