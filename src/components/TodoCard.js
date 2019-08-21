@@ -1,12 +1,13 @@
 import React from 'react';
 
 const TodoCard = (props) => {
-    const todo = props.todo;
+    const {todo, toggle} = props;
+  
     return (
         <div className="todo-card" style={{display: 'flex', alignItems: 'center'}}>
             <div style={{paddingRight: '1em'}}>
                 <label class="switch">
-                    <input type="checkbox"/>
+                    <input type="checkbox" checked={todo.completed} onChange={(e) => toggle(e, todo.id)}/>
                     <span class="slider round"></span>
                 </label>
             </div>

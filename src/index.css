@@ -8,6 +8,12 @@ body {
     font-weight: lighter;
 }
 
+.todos {
+    overflow: auto;
+    width: 80%;
+    height: 70vh;
+}
+
 .completed {
     text-decoration: line-through;
 }
@@ -77,4 +83,26 @@ body {
   
   .slider.round:before {
     border-radius: 50%;
+  }
+
+  /* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #d3d3d3; 
+    border-radius: 5px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 5px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
   }

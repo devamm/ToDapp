@@ -12,10 +12,22 @@ class App extends React.Component {
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
+        this.generateDummyData = this.generateDummyData.bind(this);
+        this.toggleTodo = this.toggleTodo.bind(this);
     }
 
     componentDidMount(){
-       this.connectToBlockChain();
+        this.connectToBlockChain();
+        this.generateDummyData();
+    }
+
+    generateDummyData(){
+        let tmpTasks = []
+        for(let i = 10; i <=30; i++){
+            console.log('setting state for ',i);
+            tmpTasks.push({id: i, content: 'task'+i, completed: false});
+        }
+        this.setState({tasks: [...this.state.tasks, ...tmpTasks]});
     }
 
     async connectToBlockChain(){
@@ -32,9 +44,20 @@ class App extends React.Component {
             this.setState({tasks: [...this.state.tasks, task]});
         }
     }
+
+    toggleTodo(event, id){
+      
+        let tasks = this.state.tasks;
+        tasks.map(task => {
+            if(task.id == id){
+                task.completed = !task.completed
+            }
+        });
+        this.setState({tasks});
+    }
     
     render(){
-       console.log(this.state.tasks)
+      
         return (
             <div className="container">
                 <h1>Hello!</h1>
@@ -46,7 +69,7 @@ class App extends React.Component {
                 <br/>
                 <h2>To Do:</h2>
                 <div className="todos">
-                    {this.state.tasks.map(todo => (<TodoCard todo={todo} key={`todo${todo.id}`} />))}
+                    {this.state.tasks.map(todo => (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} />))}
                 </div>
             </div>
         )
