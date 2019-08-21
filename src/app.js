@@ -45,7 +45,7 @@ class App extends React.Component {
               
                 <br/>
                 <h2>To Do:</h2>
-                <div className="todos" style={{border: '1px solid red'}}>
+                <div className="todos">
                     {this.state.tasks.map(todo => (<TodoCard todo={todo} key={`todo${todo.id}`} />))}
                 </div>
             </div>
