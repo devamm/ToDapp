@@ -8,7 +8,9 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            tasks: [{id: 69, completed: true, content: "done"}]
+            tasks: [{id: 69, completed: true, content: "done"}],
+            connected: false,
+            error: false
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -17,14 +19,14 @@ class App extends React.Component {
     }
 
     componentDidMount(){
-        this.connectToBlockChain();
-        this.generateDummyData();
+        this.connectToBlockChain(); 
+        //this.generateDummyData();
     }
 
     generateDummyData(){
         let tmpTasks = []
         for(let i = 10; i <=30; i++){
-            console.log('setting state for ',i);
+            //console.log('setting state for ',i);
             tmpTasks.push({id: i, content: 'task'+i, completed: false});
         }
         this.setState({tasks: [...this.state.tasks, ...tmpTasks]});
@@ -32,17 +34,22 @@ class App extends React.Component {
 
     async connectToBlockChain(){
         //YEET
-        const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+        try {
+            const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
        
-        const todoContract = new web3.eth.Contract(TODO_LIST_ABI, TODO_LIST_ADDRESS, {
-            gasPrice: '20000000000'
-        });
-      
-        const count = await todoContract.methods.taskCount().call();
-        for(let i = 1; i<= count; i++){
-            const task = await todoContract.methods.tasks(i).call();
-            this.setState({tasks: [...this.state.tasks, task]});
+            const todoContract = new web3.eth.Contract(TODO_LIST_ABI, TODO_LIST_ADDRESS, {
+                gasPrice: '20000000000'
+            });
+          
+            const count = await todoContract.methods.taskCount().call();
+            for(let i = 1; i<= count; i++){
+                const task = await todoContract.methods.tasks(i).call();
+                this.setState({tasks: [...this.state.tasks, task], connected: true});
+            }
+        } catch(e){
+            this.setState({connected: false, error: true})
         }
+       
     }
 
     toggleTodo(event, id){
@@ -60,17 +67,36 @@ class App extends React.Component {
       
         return (
             <div className="container">
-                <h1>Hello!</h1>
-                <div style={{display: 'flex'}}>
-                    <h4>Connected to Contract:</h4>
-                    <h4 className="hash" style={{paddingLeft: '1em'}}>{TODO_LIST_ADDRESS} </h4>
-                </div>
-              
                 <br/>
-                <h2>To Do:</h2>
-                <div className="todos">
-                    {this.state.tasks.map(todo => (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} />))}
-                </div>
+                <h1>Hello!</h1>
+                    {this.state.connected == true ?  
+                        (<div style={{display: 'flex'}}>
+                            <h4>Connected to Contract:</h4>
+                            <h4 className="hash" style={{paddingLeft: '1em'}}>{TODO_LIST_ADDRESS} </h4>
+                        </div>) 
+                    : (<div style={{display: 'flex'}}>
+                        <h4>Connecting to Blockchain</h4>
+                        <img src="static/loading.gif" style={{
+                            alignSelf: 'flex-end', height: '0.4em', paddingLeft: '0.1em', marginBottom: '0.7rem'}}/>
+                        </div>)}
+                <br/>
+                {this.state.connected == true ? (
+                    (
+                        <div>
+                            <h2>To Do:</h2>
+                            <div className="todos">
+                                {this.state.tasks.map(todo => 
+                                    (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} />)
+                                )}
+                            </div>
+                        </div>
+                    )
+                ) : this.state.error == true ? (
+                    <div style={{backgroundColor: '#ededed'}}>
+                        <h2 className="hash">Error: Could not connect to smart contract</h2>
+                    </div>
+                ) : '' }
+               
             </div>
         )
     }
