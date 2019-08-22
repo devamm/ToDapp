@@ -14,23 +14,8 @@ class App extends React.Component {
             error: false,
             edit: false,
             showAll: false,
-            transactions: [ "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
-                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
-                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
-                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
-                            "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
-                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
-                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
-                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
-                            "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
-                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
-                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
-                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
-                            "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
-                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
-                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
-                            "updated todo a with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
-                        ]
+            transactions: [],
+            contract: {}
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -49,14 +34,14 @@ class App extends React.Component {
         try {
             const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
        
-            const todoContract = new web3.eth.Contract(TODO_LIST_ABI, TODO_LIST_ADDRESS, {
+            const contract = new web3.eth.Contract(TODO_LIST_ABI, TODO_LIST_ADDRESS, {
                 gasPrice: '20000000000'
             });
           
-            const count = await todoContract.methods.taskCount().call();
+            const count = await contract.methods.taskCount().call();
             for(let i = 1; i<= count; i++){
-                const task = await todoContract.methods.tasks(i).call();
-                this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true});
+                const task = await contract.methods.tasks(i).call();
+                this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
             }
         } catch(e){
             this.setState({connected: false, error: true})
@@ -89,9 +74,28 @@ class App extends React.Component {
 
     saveChanges(e){
         e.preventDefault();
-        console.log('tasks to edit:')
-        console.log(this.state.tasks.filter(task => task.change != undefined)
-        .filter(filtered => filtered.completed != filtered.change).map(final=> Number.parseInt(final.id)));
+        //console.log('tasks to edit:')
+        this.state.tasks.filter(task => task.change != undefined)
+        .filter(filtered => filtered.completed != filtered.change).map(final=> Number.parseInt(final.id)).forEach(
+            todoId => {
+                this.state.contract.methods.toggleCompleted(todoId).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'}).once('receipt', 
+                (receipt) => {
+                    //do stuff with reciept here
+                    console.log(receipt);
+                    let hashes = this.state.transactions;
+                    hashes.push(`updated todo ${todoId} with address ${receipt.transactionHash}`);
+                    let tasks = this.state.tasks;
+                    tasks.map(task => {
+                        if(task.id == todoId){
+                            task.completed = !task.completed;
+                        }
+                    })
+
+                    this.setState({tasks, transactions: hashes});
+                })
+            }
+        );
+        this.setState({edit: false});
     }
     
     render(){
@@ -110,7 +114,7 @@ class App extends React.Component {
         const todos = this.state.tasks.filter(todo => !todo.completed|| this.state.showAll )
         console.log(todos)
         return (
-            <div className="container" style={{heigh: '100vh'}}>
+            <div className="container">
                 <br/>
                 <h1>{helloMsg}</h1>
                     {this.state.connected == true ?  

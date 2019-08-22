@@ -14,14 +14,13 @@ button, button:focus {
 
 .todos {
     overflow-y: auto;
-    width: 80%;
     height: 70vh;
 }
 
 .transactions-view {
   background-color: rgb(223, 222, 222);
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .completed {
