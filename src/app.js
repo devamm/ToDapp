@@ -8,7 +8,7 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            tasks: [{id: 69, completed: true, content: "done"}],
+            tasks: [{id: 69, completed: true, content: "done", change: undefined}],
             connected: false,
             error: false,
             edit: false,
@@ -19,6 +19,7 @@ class App extends React.Component {
         this.toggleShowAll = this.toggleShowAll.bind(this);
         this.toggleTodo = this.toggleTodo.bind(this);
         this.toggleEditor = this.toggleEditor.bind(this);
+        this.saveChanges = this.saveChanges.bind(this);
     }
 
     componentDidMount(){
@@ -37,7 +38,7 @@ class App extends React.Component {
             const count = await todoContract.methods.taskCount().call();
             for(let i = 1; i<= count; i++){
                 const task = await todoContract.methods.tasks(i).call();
-                this.setState({tasks: [...this.state.tasks, task], connected: true});
+                this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true});
             }
         } catch(e){
             this.setState({connected: false, error: true})
@@ -55,7 +56,9 @@ class App extends React.Component {
         let tasks = this.state.tasks;
         tasks.map(task => {
             if(task.id == id){
-                task.completed = !task.completed
+                //const oldStatus = task.completed;
+                //task.completed = event.target.checked;
+                task.change = event.target.checked;
             }
         });
         this.setState({tasks});
@@ -64,6 +67,13 @@ class App extends React.Component {
     toggleEditor(e){
         e.preventDefault();
         this.setState({edit: !this.state.edit});
+    }
+
+    saveChanges(e){
+        e.preventDefault();
+        console.log('tasks to edit:')
+        console.log(this.state.tasks.filter(task => task.change != undefined)
+        .filter(filtered => filtered.completed != filtered.change).map(final=> final.id ));
     }
     
     render(){
@@ -80,7 +90,7 @@ class App extends React.Component {
         }
         //show all == true
         const todos = this.state.tasks.filter(todo => !todo.completed|| this.state.showAll )
-
+        console.log(todos)
         return (
             <div className="container">
                 <br/>
@@ -101,8 +111,9 @@ class App extends React.Component {
                         <div>
                             <h2>To Do:</h2>
                             <div className="todo-header" style={{display: 'flex', alignContent: 'center'}}>
-                                <button onClick={this.toggleEditor}>Edit</button>
-                                <button onClick={this.toggleShowAll} >Show All</button>
+                                <button onClick={this.toggleEditor}>{`${this.state.edit? 'Close' : 'Edit'}`}</button>
+                                {this.state.edit ? (<button onClick={this.saveChanges}>Save Changes</button>) : ''}
+                                <button onClick={this.toggleShowAll} disabled={this.state.edit}>Show All</button>
                             </div>
                             <div className="todos">
                                 {todos.map(todo => 
