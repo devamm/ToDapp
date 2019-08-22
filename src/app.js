@@ -13,6 +13,23 @@ class App extends React.Component {
             error: false,
             edit: false,
             showAll: false,
+            transactions: [ "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
+                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
+                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
+                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
+                            "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
+                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
+                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
+                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
+                            "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
+                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
+                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
+                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
+                            "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
+                            "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
+                            "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
+                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
+                        ]
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -92,7 +109,7 @@ class App extends React.Component {
         const todos = this.state.tasks.filter(todo => !todo.completed|| this.state.showAll )
         console.log(todos)
         return (
-            <div className="container">
+            <div className="container" style={{heigh: '100vh'}}>
                 <br/>
                 <h1>{helloMsg}</h1>
                     {this.state.connected == true ?  
@@ -108,22 +125,42 @@ class App extends React.Component {
                 <br/>
                 {this.state.connected == true ? (
                     (
-                        <div>
-                            <h2>To Do:</h2>
-                           
-                            <div className="todo-header" style={{display: 'flex', alignContent: 'center'}}>
-                                <button className="square_btn default" onClick={this.toggleEditor}>{`${this.state.edit? 'Close' : 'Edit'}`}</button>
-                                {this.state.edit ? (<button className="square_btn save" onClick={this.saveChanges}>Save Changes</button>) : ''}
-                                <button className="square_btn default" onClick={this.toggleShowAll} disabled={this.state.edit}>Show {
-                                    this.state.showAll ? 'Incomplete' : "All"}</button>
+                        <div className="outside" style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div className="todo-wrapper" style={{width: '48%'}}>
+                                <h2>To Do:</h2>
+                            
+                                <div className="todo-header" style={{
+                                    display: 'flex', alignContent: 'center', justifyContent: 'space-between'}
+                                }>
+                                    <div>
+                                        <button className="square_btn default" onClick={this.toggleEditor}>
+                                            {`${this.state.edit? 'Close' : 'Edit'}`}
+                                        </button>
+                                        {this.state.edit ? (
+                                            <button className="square_btn save" onClick={this.saveChanges}>Save Changes</button>
+                                        ) : ''}
+                                    </div>
+                                    <button className="square_btn default" onClick={this.toggleShowAll} 
+                                    disabled={this.state.edit}>Show {
+                                        this.state.showAll ? 'Incomplete' : "All"}</button>
+                                </div>
+                                <hr/>
+                                <div className="todos">
+                                    {todos.map(todo => 
+                                        (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo}
+                                         edit={this.state.edit} />)
+                                    )}
+                                </div>
                             </div>
-                            <hr/>
-                            <div className="todos">
-                                {todos.map(todo => 
-                                    (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} edit={this.state.edit} />)
-                                )}
+                            <div className="transactions" style={{width: '48%', height: '100%'}}>
+                                <h2>Transactions:</h2>
+                                <div className="todos transactions-view">
+                                        {this.state.transactions.map(trans => (<p className="hash">{trans}</p>))}
+                                </div>
                             </div>
                         </div>
+
+                       
                     )
                 ) : this.state.error == true ? (
                     <div style={{backgroundColor: '#ededed'}}>
