@@ -10,12 +10,14 @@ class App extends React.Component {
         this.state = {
             tasks: [{id: 69, completed: true, content: "done"}],
             connected: false,
-            error: false
+            error: false,
+            edit: false
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
         this.generateDummyData = this.generateDummyData.bind(this);
         this.toggleTodo = this.toggleTodo.bind(this);
+        this.toggleEditor = this.toggleEditor.bind(this);
     }
 
     componentDidMount(){
@@ -62,13 +64,29 @@ class App extends React.Component {
         });
         this.setState({tasks});
     }
+
+    toggleEditor(e){
+        e.preventDefault();
+        this.setState({edit: !this.state.edit});
+    }
     
     render(){
-      
+        let helloMsg;
+        const date = Number.parseInt(new Date().toString().substring(16,18));
+        if(date >= 5 && date < 12){
+            helloMsg = 'Good Morning!';
+        } else if(date >=12 && date <= 16){
+            helloMsg = 'Good Afternoon!';
+        } else if(date >=17 && date <=23){
+            helloMsg = "Good Evening!";
+        } else {
+            helloMsg = "Hello!"
+        }
+
         return (
             <div className="container">
                 <br/>
-                <h1>Hello!</h1>
+                <h1>{helloMsg}</h1>
                     {this.state.connected == true ?  
                         (<div style={{display: 'flex'}}>
                             <h4>Connected to Contract:</h4>
@@ -84,9 +102,13 @@ class App extends React.Component {
                     (
                         <div>
                             <h2>To Do:</h2>
+                            <div className="todo-header" style={{display: 'flex', alignContent: 'center'}}>
+                                <button onClick={this.toggleEditor}>Edit</button>
+                                <button>Show All</button>
+                            </div>
                             <div className="todos">
                                 {this.state.tasks.map(todo => 
-                                    (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} />)
+                                    (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} edit={this.state.edit} />)
                                 )}
                             </div>
                         </div>
