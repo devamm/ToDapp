@@ -22,6 +22,47 @@ body {
     color: #32a852;
 }
 
+.square_btn {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  padding: 0.2em;
+  text-decoration: none;
+  background: #fcf7f7;
+  border-radius: 15px;
+  transition: .4s;
+}
+
+.square_btn:disabled{
+  cursor: not-allowed;
+}
+
+.default{
+  color: #747474;
+  border: 2px solid #747474;
+}
+
+
+
+.save {
+  color: #32a852;
+  border: 2px solid #32a852;
+}
+
+.save:hover {
+  color: white;
+  background-color: #32a852;
+  border: 2px solid #32a852;
+}
+
+
+.default:hover {
+  background: #747474;
+  border: 2px solid #747474;
+  color: white;
+  
+}
+
 /* The switch - the box around the slider */
 .switch {
     position: relative;

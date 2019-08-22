@@ -12,7 +12,7 @@ class App extends React.Component {
             connected: false,
             error: false,
             edit: false,
-            showAll: true,
+            showAll: false,
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -73,7 +73,7 @@ class App extends React.Component {
         e.preventDefault();
         console.log('tasks to edit:')
         console.log(this.state.tasks.filter(task => task.change != undefined)
-        .filter(filtered => filtered.completed != filtered.change).map(final=> final.id ));
+        .filter(filtered => filtered.completed != filtered.change).map(final=> Number.parseInt(final.id)));
     }
     
     render(){
@@ -88,7 +88,7 @@ class App extends React.Component {
         } else {
             helloMsg = "Hello!"
         }
-        //show all == true
+       
         const todos = this.state.tasks.filter(todo => !todo.completed|| this.state.showAll )
         console.log(todos)
         return (
@@ -110,11 +110,14 @@ class App extends React.Component {
                     (
                         <div>
                             <h2>To Do:</h2>
+                           
                             <div className="todo-header" style={{display: 'flex', alignContent: 'center'}}>
-                                <button onClick={this.toggleEditor}>{`${this.state.edit? 'Close' : 'Edit'}`}</button>
-                                {this.state.edit ? (<button onClick={this.saveChanges}>Save Changes</button>) : ''}
-                                <button onClick={this.toggleShowAll} disabled={this.state.edit}>Show All</button>
+                                <button className="square_btn default" onClick={this.toggleEditor}>{`${this.state.edit? 'Close' : 'Edit'}`}</button>
+                                {this.state.edit ? (<button className="square_btn save" onClick={this.saveChanges}>Save Changes</button>) : ''}
+                                <button className="square_btn default" onClick={this.toggleShowAll} disabled={this.state.edit}>Show {
+                                    this.state.showAll ? 'Incomplete' : "All"}</button>
                             </div>
+                            <hr/>
                             <div className="todos">
                                 {todos.map(todo => 
                                     (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} edit={this.state.edit} />)
