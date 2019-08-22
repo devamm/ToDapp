@@ -28,7 +28,7 @@ class App extends React.Component {
                             "updated todo 1 with address 0xF0AbdD39Fe698e4813bD029CfFe68B2d70EB8871",
                             "created todo 1 with address 0x3dsaSd29213e4813bQ23ZdleR4sd323AdeRkaXl2",
                             "updated todo 1 with address 0x23ABdaS34AkgrBf698Se43bD453b320342eDfaed",
-                            "updated todo 1 with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
+                            "updated todo a with address 0x029CfFe68F34Ssaf4813bDB2d7dD39Fe60EB8871",
                         ]
         }
 
@@ -155,7 +155,9 @@ class App extends React.Component {
                             <div className="transactions" style={{width: '48%', height: '100%'}}>
                                 <h2>Transactions:</h2>
                                 <div className="todos transactions-view">
-                                        {this.state.transactions.map(trans => (<p className="hash">{trans}</p>))}
+                                        <div>
+                                            {this.state.transactions.map(trans => (<p className="hash">{trans}</p>))}
+                                        </div>
                                 </div>
                             </div>
                         </div>
