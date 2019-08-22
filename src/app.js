@@ -11,27 +11,18 @@ class App extends React.Component {
             tasks: [{id: 69, completed: true, content: "done"}],
             connected: false,
             error: false,
-            edit: false
+            edit: false,
+            showAll: true,
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
-        this.generateDummyData = this.generateDummyData.bind(this);
+        this.toggleShowAll = this.toggleShowAll.bind(this);
         this.toggleTodo = this.toggleTodo.bind(this);
         this.toggleEditor = this.toggleEditor.bind(this);
     }
 
     componentDidMount(){
         this.connectToBlockChain(); 
-        //this.generateDummyData();
-    }
-
-    generateDummyData(){
-        let tmpTasks = []
-        for(let i = 10; i <=30; i++){
-            //console.log('setting state for ',i);
-            tmpTasks.push({id: i, content: 'task'+i, completed: false});
-        }
-        this.setState({tasks: [...this.state.tasks, ...tmpTasks]});
     }
 
     async connectToBlockChain(){
@@ -52,6 +43,11 @@ class App extends React.Component {
             this.setState({connected: false, error: true})
         }
        
+    }
+
+    toggleShowAll(e){
+        e.preventDefault();
+        this.setState({showAll: !this.state.showAll});
     }
 
     toggleTodo(event, id){
@@ -82,6 +78,8 @@ class App extends React.Component {
         } else {
             helloMsg = "Hello!"
         }
+        //show all == true
+        const todos = this.state.tasks.filter(todo => !todo.completed|| this.state.showAll )
 
         return (
             <div className="container">
@@ -104,10 +102,10 @@ class App extends React.Component {
                             <h2>To Do:</h2>
                             <div className="todo-header" style={{display: 'flex', alignContent: 'center'}}>
                                 <button onClick={this.toggleEditor}>Edit</button>
-                                <button>Show All</button>
+                                <button onClick={this.toggleShowAll} >Show All</button>
                             </div>
                             <div className="todos">
-                                {this.state.tasks.map(todo => 
+                                {todos.map(todo => 
                                     (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo} edit={this.state.edit} />)
                                 )}
                             </div>

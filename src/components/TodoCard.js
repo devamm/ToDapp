@@ -11,7 +11,7 @@ const TodoCard = (props) => {
                     <span class="slider round"></span>
                 </label>
             </div>) : ''}
-            <h3 className={todo.completed == true ? 'completed' : '' }>{todo.content}</h3>
+            <h3 className={`${todo.completed == true? 'completed': ''}`}>{todo.content}</h3>
             
         </div>
     )
