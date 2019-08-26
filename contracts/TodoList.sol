@@ -7,6 +7,7 @@ contract TodoList{
         uint id;
         string content;
         bool completed;
+        bool deleted;
     }
 
     mapping(uint => Task) public tasks;
@@ -37,5 +38,14 @@ contract TodoList{
         _task.completed = !_task.completed;
         tasks[_id] = _task;
         emit TaskCompletedEvent(_id, _task.completed);
-    }    
+    }
+
+    event TaskDeletedEvent(
+        uint id
+    );
+
+    function deleteTask(uint _id) public {
+        delete tasks[_id].deleted = true;
+        emit TaskDeletedEvent(_id);
+    }   
 }

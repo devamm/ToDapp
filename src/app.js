@@ -3,13 +3,14 @@ import Web3 from 'web3';
 import {TODO_LIST_ADDRESS, TODO_LIST_ABI} from './config';
 import TodoCard from './components/TodoCard';
 import Transactions from './components/Transactions';
+import Modal from './components/Modal';
 
 class App extends React.Component {
     constructor(props){
         super(props);
 
         this.state = {
-            tasks: [{id: 69, completed: true, content: "done", change: undefined}],
+            tasks: [],
             connected: false,
             error: false,
             edit: false,
@@ -17,6 +18,7 @@ class App extends React.Component {
             transactions: [],
             contract: {},
             scroll: false,
+            open: false
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -25,6 +27,8 @@ class App extends React.Component {
         this.toggleEditor = this.toggleEditor.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
         this.keepScrolled = this.keepScrolled.bind(this);
+        this.deleteTodo = this.deleteTodo.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
     }
 
     componentDidMount(){
@@ -43,7 +47,11 @@ class App extends React.Component {
             const count = await contract.methods.taskCount().call();
             for(let i = 1; i<= count; i++){
                 const task = await contract.methods.tasks(i).call();
-                this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
+                console.log('on load: \n',task);
+                if(task. id != "0"){
+                    this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
+                }
+              
             }
         } catch(e){
             this.setState({connected: false, error: true})
@@ -69,9 +77,36 @@ class App extends React.Component {
         this.setState({tasks});
     }
 
+    deleteTodo(e, id){
+        e.preventDefault();
+        console.log('deleting ',id);
+       // console.log(this.state.contract.methods);
+        //return;
+        id = Number.parseInt(id);
+        try{
+            this.state.contract.methods.deleteTask(id).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'}).once(
+                'receipt', (receipt) => {
+                    let transactions = this.state.transactions;
+                    transactions.push(`deleted Todo ${id} with address ${receipt.transaction}`);
+
+                    this.setState({transactions, tasks: this.state.tasks.filter(task => task.id != id)})
+
+        
+                }
+            )
+        } catch(e){
+            console.log(e);
+        }
+    }
+
     toggleEditor(e){
         e.preventDefault();
         this.setState({edit: !this.state.edit});
+    }
+
+    toggleModal(e){
+        e.preventDefault();
+        this.setState({open: !this.state.open});
     }
 
     saveChanges(e){
@@ -83,7 +118,7 @@ class App extends React.Component {
                 this.state.contract.methods.toggleCompleted(todoId).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'}).once('receipt', 
                 (receipt) => {
                     //do stuff with reciept here
-                    console.log(receipt);
+                    //console.log(receipt);
                     let hashes = this.state.transactions;
                     hashes.push(`updated todo ${todoId} with address ${receipt.transactionHash}`);
                     let tasks = this.state.tasks;
@@ -150,23 +185,27 @@ class App extends React.Component {
                                 <div className="todo-header" style={{
                                     display: 'flex', alignContent: 'center', justifyContent: 'space-between'}
                                 }>
-                                    <div>
-                                        <button className="square_btn default" onClick={this.toggleEditor}>
+                                    <div style={{display: 'flex', flexDirection: 'row-reverse'}}>
+                                        <button className="square_btn default" onClick={this.toggleEditor} >
                                             {`${this.state.edit? 'Close' : 'Edit'}`}
                                         </button>
                                         {this.state.edit ? (
                                             <button className="square_btn save" onClick={this.saveChanges}>Save Changes</button>
-                                        ) : ''}
+                                        ) : (
+                                            <button className="square_btn save">Add Todo</button>
+                                        )}
                                     </div>
                                     <button className="square_btn default" onClick={this.toggleShowAll} 
-                                    disabled={this.state.edit}>Show {
-                                        this.state.showAll ? 'Incomplete' : "All"}</button>
+                                    disabled={this.state.edit}>Toggle All/Incomplete {/*
+                                    this.state.showAll ? 'Incomplete' : "All"*/}</button>
                                 </div>
                                 <hr/>
+                                {this.state.open == true ? (<Modal />) : ''}
                                 <div className="todos">
+                                    {/*<p>Showing {this.state.showAll ? 'All:': 'Incomplete:'}</p> */}
                                     {todos.map(todo => 
                                         (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo}
-                                         edit={this.state.edit} />)
+                                         edit={this.state.edit} deleteTodo={this.deleteTodo} />)
                                     )}
                                 </div>
                             </div>
