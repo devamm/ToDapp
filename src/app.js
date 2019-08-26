@@ -15,7 +15,8 @@ class App extends React.Component {
             edit: false,
             showAll: false,
             transactions: [],
-            contract: {}
+            contract: {},
+            scroll: false,
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -23,6 +24,7 @@ class App extends React.Component {
         this.toggleTodo = this.toggleTodo.bind(this);
         this.toggleEditor = this.toggleEditor.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
+        this.keepScrolled = this.keepScrolled.bind(this);
     }
 
     componentDidMount(){
@@ -92,10 +94,20 @@ class App extends React.Component {
                     })
 
                     this.setState({tasks, transactions: hashes});
+                    this.keepScrolled();
                 })
             }
         );
         this.setState({edit: false});
+    }
+
+    keepScrolled(){
+        const element = document.getElementById("transaction");
+        if(!element){
+            return;
+        }
+        element.scrollTop = Number.MAX_SAFE_INTEGER;
+        this.setState({scroll: !this.state.scroll});
     }
     
     render(){
@@ -112,7 +124,8 @@ class App extends React.Component {
         }
        
         const todos = this.state.tasks.filter(todo => !todo.completed|| this.state.showAll )
-        console.log(todos)
+        //console.log(todos)
+        
         return (
             <div className="container">
                 <br/>
@@ -158,6 +171,7 @@ class App extends React.Component {
                                 </div>
                             </div>
                             <Transactions transactions={this.state.transactions}/>
+                           
                         </div>
 
                        
