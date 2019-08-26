@@ -192,7 +192,7 @@ class App extends React.Component {
                                         {this.state.edit ? (
                                             <button className="square_btn save" onClick={this.saveChanges}>Save Changes</button>
                                         ) : (
-                                            <button className="square_btn save">Add Todo</button>
+                                            <button className="square_btn save" onClick={this.toggleModal}>Add Todo</button>
                                         )}
                                     </div>
                                     <button className="square_btn default" onClick={this.toggleShowAll} 
