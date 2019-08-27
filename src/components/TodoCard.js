@@ -22,7 +22,6 @@ const TodoCard = (props) => {
             <img src="static/trash.png" className="trash" 
             style={{height: '1.3em', margin: '0 0.5em 0.5em auto', alignSelf: 'center'}} onClick={(e) => deleteTodo(e, todo.id)} />
             ) : ''}
-            
         </div>
     )
 }

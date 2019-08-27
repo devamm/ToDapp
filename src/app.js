@@ -51,16 +51,13 @@ class App extends React.Component {
                 if(task. id != "0"){
                     this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
                 }
-              
             }
         } catch(e){
             this.setState({connected: false, error: true})
         }
-       
     }
 
     toggleShowAll(e){
-        //e.preventDefault();
         this.setState({showAll: !this.state.showAll, open: false});
     }
 
@@ -79,9 +76,6 @@ class App extends React.Component {
 
     deleteTodo(e, id){
         e.preventDefault();
-        console.log('deleting ',id);
-       // console.log(this.state.contract.methods);
-        //return;
         id = Number.parseInt(id);
         try{
             this.state.contract.methods.deleteTask(id).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'}).once(
@@ -90,8 +84,6 @@ class App extends React.Component {
                     transactions.push(`deleted Todo ${id} with address ${receipt.transaction}`);
 
                     this.setState({transactions, tasks: this.state.tasks.filter(task => task.id != id)})
-
-        
                 }
             )
         } catch(e){
@@ -111,14 +103,13 @@ class App extends React.Component {
 
     saveChanges(e){
         e.preventDefault();
-        //console.log('tasks to edit:')
+
         this.state.tasks.filter(task => task.change != undefined)
         .filter(filtered => filtered.completed != filtered.change).map(final=> Number.parseInt(final.id)).forEach(
             todoId => {
                 this.state.contract.methods.toggleCompleted(todoId).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'})
                 .once('receipt', (receipt) => {
                     //do stuff with reciept here
-                    //console.log(receipt);
                     let hashes = this.state.transactions;
                     hashes.push(`updated todo ${todoId} with address ${receipt.transactionHash}`);
                     let tasks = this.state.tasks;
@@ -127,7 +118,6 @@ class App extends React.Component {
                             task.completed = !task.completed;
                         }
                     })
-
                     this.setState({tasks, transactions: hashes});
                     this.keepScrolled();
                 })
@@ -158,8 +148,7 @@ class App extends React.Component {
             helloMsg = "Hello!"
         }
        
-        const todos = this.state.tasks.filter(todo => !todo.completed|| this.state.showAll )
-        //console.log(todos)
+        const todos = this.state.tasks.filter(todo => !todo.completed || this.state.showAll )
         
         return (
             <div className="container">
@@ -195,9 +184,6 @@ class App extends React.Component {
                                             <button className="square_btn save" onClick={this.toggleModal}>Add Todo</button>
                                         )}
                                     </div>
-                                    {/*<button className="square_btn default" onClick={this.toggleShowAll} 
-                                    disabled={this.state.edit}>Toggle All/Incomplete {/*
-                                    this.state.showAll ? 'Incomplete' : "All"}</button>*/}
                                    <div style={{display: 'flex', alignItems: 'center'}}>
                                     <p className="toggle-text">Showing: Incomplete</p>
                                         <div style={{display: 'flex'}}>
@@ -212,18 +198,14 @@ class App extends React.Component {
                                 <hr/>
                                 {this.state.open == true ? <Modal /> : ''}
                                 <div className="todos">
-                                    {/*<p>Showing {this.state.showAll ? 'All:': 'Incomplete:'}</p> */}
                                     {todos.map(todo => 
                                         (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo}
                                          edit={this.state.edit} deleteTodo={this.deleteTodo} />)
                                     )}
                                 </div>
                             </div>
-                            <Transactions transactions={this.state.transactions}/>
-                           
+                            <Transactions transactions={this.state.transactions}/>  
                         </div>
-
-                       
                     )
                 ) : this.state.error == true ? (
                     <div style={{backgroundColor: '#ededed'}}>
