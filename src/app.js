@@ -60,7 +60,7 @@ class App extends React.Component {
     }
 
     toggleShowAll(e){
-        e.preventDefault();
+        //e.preventDefault();
         this.setState({showAll: !this.state.showAll, open: false});
     }
 
@@ -195,9 +195,19 @@ class App extends React.Component {
                                             <button className="square_btn save" onClick={this.toggleModal}>Add Todo</button>
                                         )}
                                     </div>
-                                    <button className="square_btn default" onClick={this.toggleShowAll} 
+                                    {/*<button className="square_btn default" onClick={this.toggleShowAll} 
                                     disabled={this.state.edit}>Toggle All/Incomplete {/*
-                                    this.state.showAll ? 'Incomplete' : "All"*/}</button>
+                                    this.state.showAll ? 'Incomplete' : "All"}</button>*/}
+                                   <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <p className="toggle-text">Showing: Incomplete</p>
+                                        <div style={{display: 'flex'}}>
+                                            <label className="switch" style={{alignSelf: 'center', margin: '0 0.5em'}}>
+                                                <input type="checkbox" checked={this.state.showAll} onChange={this.toggleShowAll}/>
+                                                <span className="slider-toggle round"></span>
+                                            </label>
+                                        </div>
+                                    <p className="toggle-text">All</p>
+                                    </div>
                                 </div>
                                 <hr/>
                                 {this.state.open == true ? <Modal /> : ''}
