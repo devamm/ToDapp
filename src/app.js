@@ -48,10 +48,11 @@ class App extends React.Component {
             });
           
             const count = await contract.methods.taskCount().call();
+            console.log(count);
             for(let i = 1; i<= count; i++){
                 const task = await contract.methods.tasks(i).call();
-                //console.log('on load: \n',task);
-                if(task. id != "0"){
+                console.log('on load: \n',task);
+                if(task.deleted == false){
                     this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
                 }
             }

@@ -24,7 +24,7 @@ contract TodoList{
 
     function createTask(string memory _content) public {
         taskCount++;
-        tasks[taskCount] = Task(taskCount, _content, false);
+        tasks[taskCount] = Task(taskCount, _content, false, false);
         emit TaskCreatedEvent(taskCount, _content, false);
     }
 
@@ -45,7 +45,7 @@ contract TodoList{
     );
 
     function deleteTask(uint _id) public {
-        delete tasks[_id].deleted = true;
+        tasks[_id].deleted = true;
         emit TaskDeletedEvent(_id);
     }   
 }

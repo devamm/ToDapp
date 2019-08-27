@@ -1,4 +1,4 @@
-export const TODO_LIST_ADDRESS = '0x08B098D6c09654bA5bD17565460375D9A0231c48';
+export const TODO_LIST_ADDRESS = '0xcd9cc6Ec2d88fb115014e25ec3F39Cbf94E3Cb07';
 
 export const TODO_LIST_ABI = [
   {
@@ -21,6 +21,10 @@ export const TODO_LIST_ABI = [
       },
       {
         "name": "completed",
+        "type": "bool"
+      },
+      {
+        "name": "deleted",
         "type": "bool"
       }
     ],
