@@ -61,7 +61,7 @@ class App extends React.Component {
 
     toggleShowAll(e){
         e.preventDefault();
-        this.setState({showAll: !this.state.showAll});
+        this.setState({showAll: !this.state.showAll, open: false});
     }
 
     toggleTodo(event, id){
@@ -101,7 +101,7 @@ class App extends React.Component {
 
     toggleEditor(e){
         e.preventDefault();
-        this.setState({edit: !this.state.edit});
+        this.setState({edit: !this.state.edit, open: false});
     }
 
     toggleModal(e){
@@ -115,8 +115,8 @@ class App extends React.Component {
         this.state.tasks.filter(task => task.change != undefined)
         .filter(filtered => filtered.completed != filtered.change).map(final=> Number.parseInt(final.id)).forEach(
             todoId => {
-                this.state.contract.methods.toggleCompleted(todoId).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'}).once('receipt', 
-                (receipt) => {
+                this.state.contract.methods.toggleCompleted(todoId).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'})
+                .once('receipt', (receipt) => {
                     //do stuff with reciept here
                     //console.log(receipt);
                     let hashes = this.state.transactions;
@@ -181,7 +181,7 @@ class App extends React.Component {
                         <div className="outside" style={{display: 'flex', justifyContent: 'space-between'}}>
                             <div className="todo-wrapper" style={{width: '48%'}}>
                                 <h2>To Do:</h2>
-                            
+                              
                                 <div className="todo-header" style={{
                                     display: 'flex', alignContent: 'center', justifyContent: 'space-between'}
                                 }>
@@ -200,7 +200,7 @@ class App extends React.Component {
                                     this.state.showAll ? 'Incomplete' : "All"*/}</button>
                                 </div>
                                 <hr/>
-                                {this.state.open == true ? (<Modal />) : ''}
+                                {this.state.open == true ? <Modal /> : ''}
                                 <div className="todos">
                                     {/*<p>Showing {this.state.showAll ? 'All:': 'Incomplete:'}</p> */}
                                     {todos.map(todo => 

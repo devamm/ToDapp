@@ -24,14 +24,12 @@ button, button:focus {
   padding-left: 0.5em;
 }
 
-.modal{
-  z-index: 1000;
+.new-modal{
+  z-index: 10;
+  background-color: red;
+  position: fixed;
   margin: 0 auto;
-  width: 50vh;
-  height: 20vw;
-  background-color: white;
-  border-radius: 10%;
-  border: 1px solid rgb(192, 192, 192);
+  width: 50vw;
 }
 
 .trash:hover{
