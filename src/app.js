@@ -18,7 +18,8 @@ class App extends React.Component {
             transactions: [],
             contract: {},
             scroll: false,
-            open: false
+            open: false,
+            content: ''
         }
 
         this.connectToBlockChain = this.connectToBlockChain.bind(this);
@@ -29,6 +30,8 @@ class App extends React.Component {
         this.keepScrolled = this.keepScrolled.bind(this);
         this.deleteTodo = this.deleteTodo.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.createTodo = this.createTodo.bind(this);
     }
 
     componentDidMount(){
@@ -47,7 +50,7 @@ class App extends React.Component {
             const count = await contract.methods.taskCount().call();
             for(let i = 1; i<= count; i++){
                 const task = await contract.methods.tasks(i).call();
-                console.log('on load: \n',task);
+                //console.log('on load: \n',task);
                 if(task. id != "0"){
                     this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
                 }
@@ -93,12 +96,32 @@ class App extends React.Component {
 
     toggleEditor(e){
         e.preventDefault();
-        this.setState({edit: !this.state.edit, open: false});
+        this.setState({edit: !this.state.edit});
     }
 
     toggleModal(e){
         e.preventDefault();
-        this.setState({open: !this.state.open});
+        this.setState({open: !this.state.open, content: ''});
+    }
+
+    async createTodo(e){
+        e.preventDefault();
+        try{
+            console.log(this.state.contract);
+            this.state.contract.methods.createTask(this.state.content).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'})
+            .once('receipt', async (receipt) => {
+                let transactions = this.state.transactions;
+                //console.log(receipt);
+                const id = await this.state.contract.methods.taskCount().call();
+                const newTodo = await this.state.contract.methods.tasks(id).call();
+                
+                transactions.push(`created Todo ${id} with address ${receipt.transactionHash}`);
+
+                this.setState({transactions, content: '', tasks: [...this.state.tasks, {...newTodo, change: undefined}]});
+            })
+        } catch(e){
+            console.log(e);
+        }
     }
 
     saveChanges(e){
@@ -111,7 +134,7 @@ class App extends React.Component {
                 .once('receipt', (receipt) => {
                     //do stuff with reciept here
                     let hashes = this.state.transactions;
-                    hashes.push(`updated todo ${todoId} with address ${receipt.transactionHash}`);
+                    hashes.push(`updated Todo ${todoId} with address ${receipt.transactionHash}`);
                     let tasks = this.state.tasks;
                     tasks.map(task => {
                         if(task.id == todoId){
@@ -133,6 +156,10 @@ class App extends React.Component {
         }
         element.scrollTop = Number.MAX_SAFE_INTEGER;
         this.setState({scroll: !this.state.scroll});
+    }
+
+    handleChange(e){
+        this.setState({[e.target.name]: e.target.value});
     }
     
     render(){
@@ -175,7 +202,7 @@ class App extends React.Component {
                                     display: 'flex', alignContent: 'center', justifyContent: 'space-between'}
                                 }>
                                     <div style={{display: 'flex', flexDirection: 'row-reverse'}}>
-                                        <button className="square_btn default" onClick={this.toggleEditor} >
+                                        <button className="square_btn default" onClick={this.toggleEditor} disabled={this.state.open} >
                                             {`${this.state.edit? 'Close' : 'Edit'}`}
                                         </button>
                                         {this.state.edit ? (
@@ -199,14 +226,17 @@ class App extends React.Component {
                                 <hr/>
                                
                                 <div className="todos">
-                                    {this.state.open == true ? <Modal /> : ''}
+                                    {this.state.open == true ? <Modal toggle={this.toggleModal} 
+                                    content={this.state.content} handleChange={this.handleChange} create={this.createTodo} /> : ''}
                                     {todos.map(todo => 
                                         (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo}
                                          edit={this.state.edit} deleteTodo={this.deleteTodo} />)
                                     )}
                                 </div>
                             </div>
-                            <Transactions transactions={this.state.transactions}/>  
+                            <div className="transaction-wrapper">
+                                <Transactions transactions={this.state.transactions}/>  
+                            </div>
                         </div>
                     )
                 ) : this.state.error == true ? (
