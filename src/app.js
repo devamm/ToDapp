@@ -48,12 +48,16 @@ class App extends React.Component {
             });
           
             const count = await contract.methods.taskCount().call();
+        
             for(let i = 1; i<= count; i++){
                 const task = await contract.methods.tasks(i).call();
                 if(task.deleted == false){
                     this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
                 }
             }
+            //no errors caught, all todos deleted
+            this.setState({connected: true, contract});
+            
         } catch(e){
             this.setState({connected: false, error: true})
         }
@@ -83,7 +87,7 @@ class App extends React.Component {
             this.state.contract.methods.deleteTask(id).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'}).once(
                 'receipt', (receipt) => {
                     let transactions = this.state.transactions;
-                    transactions.push(`deleted Todo ${id} with address ${receipt.transaction}`);
+                    transactions.push(`deleted Todo ${id} with address ${receipt.transactionHash}`);
 
                     this.setState({transactions, tasks: this.state.tasks.filter(task => task.id != id)})
                 }
@@ -110,7 +114,7 @@ class App extends React.Component {
             this.state.contract.methods.createTask(this.state.content).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'})
             .once('receipt', async (receipt) => {
                 let transactions = this.state.transactions;
-                
+
                 const id = await this.state.contract.methods.taskCount().call();
                 const newTodo = await this.state.contract.methods.tasks(id).call();
                 
