@@ -7,7 +7,13 @@ class Modal extends React.Component {
     render(){
         return (
             <div className="new-modal">
-                <h1>I AM A MODAL</h1>
+                <div style={{width: '75%'}}>
+                    <input type="text" placeholder="New To Do"></input>
+                </div>
+                <div style={{width: '25%', display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
+                    <img className="form-img" src="static/check.png"/>
+                    <img className="form-img" src="static/close.png" />
+                </div>
             </div>
         )
        

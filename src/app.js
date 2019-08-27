@@ -58,7 +58,7 @@ class App extends React.Component {
     }
 
     toggleShowAll(e){
-        this.setState({showAll: !this.state.showAll, open: false});
+        this.setState({showAll: !this.state.showAll});
     }
 
     toggleTodo(event, id){
@@ -181,7 +181,8 @@ class App extends React.Component {
                                         {this.state.edit ? (
                                             <button className="square_btn save" onClick={this.saveChanges}>Save Changes</button>
                                         ) : (
-                                            <button className="square_btn save" onClick={this.toggleModal}>Add Todo</button>
+                                            <button className="square_btn save" onClick={this.toggleModal}
+                                             disabled={this.state.open}>Add Todo</button>
                                         )}
                                     </div>
                                    <div style={{display: 'flex', alignItems: 'center'}}>
@@ -196,8 +197,9 @@ class App extends React.Component {
                                     </div>
                                 </div>
                                 <hr/>
-                                {this.state.open == true ? <Modal /> : ''}
+                               
                                 <div className="todos">
+                                    {this.state.open == true ? <Modal /> : ''}
                                     {todos.map(todo => 
                                         (<TodoCard todo={todo} key={`todo${todo.id}`} toggle={this.toggleTodo}
                                          edit={this.state.edit} deleteTodo={this.deleteTodo} />)

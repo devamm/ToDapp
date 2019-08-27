@@ -25,11 +25,29 @@ button, button:focus {
 }
 
 .new-modal{
-  z-index: 10;
-  background-color: red;
-  position: fixed;
-  margin: 0 auto;
-  width: 50vw;
+  width: 100%;
+  display: flex;
+  align-items: 'center';
+  padding: 1em 0em;
+}
+
+.new-modal input {
+  height: 2em;
+  width: 100%;
+  font-size: 1.2em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding-left: 0.5em;
+}
+
+.form-control:focus, input:focus {
+  border-color: #32a852 !important;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(17, 204, 60, 0.25) !important; 
+}
+
+.form-img {
+  height: 2em;
 }
 
 .toggle-text{
@@ -41,11 +59,11 @@ button, button:focus {
 }
 
 .completed {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 .success {
-    color: #32a852;
+  color: #32a852;
 }
 
 .square_btn {
@@ -67,8 +85,6 @@ button, button:focus {
   color: #747474;
   border: 2px solid #747474;
 }
-
-
 
 .save {
   color: #32a852;

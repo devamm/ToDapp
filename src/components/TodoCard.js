@@ -19,8 +19,8 @@ const TodoCard = (props) => {
             </div>) : ''}
             <h3 className={`${todo.completed == true? 'completed': ''}`}>{todo.content}</h3>
             {edit == true? (
-            <img src="static/trash.png" className="trash" 
-            style={{height: '1.3em', margin: '0 0.5em 0.5em auto', alignSelf: 'center'}} onClick={(e) => deleteTodo(e, todo.id)} />
+            <img src="static/trash.png" className="trash" style={
+                {height: '1.3em', margin: '0 0.5em 0.5em auto', alignSelf: 'center'}} onClick={(e) => deleteTodo(e, todo.id)} />
             ) : ''}
         </div>
     )
