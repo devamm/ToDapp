@@ -48,10 +48,8 @@ class App extends React.Component {
             });
           
             const count = await contract.methods.taskCount().call();
-            console.log(count);
             for(let i = 1; i<= count; i++){
                 const task = await contract.methods.tasks(i).call();
-                console.log('on load: \n',task);
                 if(task.deleted == false){
                     this.setState({tasks: [...this.state.tasks, {...task, change: undefined}], connected: true, contract});
                 }
@@ -108,11 +106,11 @@ class App extends React.Component {
     async createTodo(e){
         e.preventDefault();
         try{
-            console.log(this.state.contract);
+       
             this.state.contract.methods.createTask(this.state.content).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'})
             .once('receipt', async (receipt) => {
                 let transactions = this.state.transactions;
-                //console.log(receipt);
+                
                 const id = await this.state.contract.methods.taskCount().call();
                 const newTodo = await this.state.contract.methods.tasks(id).call();
                 
