@@ -87,9 +87,10 @@ class App extends React.Component {
             this.state.contract.methods.deleteTask(id).send({from: '0x2e18C8fC1f99513FDaCCA32Fa095b688008C2433'}).once(
                 'receipt', (receipt) => {
                     let transactions = this.state.transactions;
-                    transactions.push(`deleted Todo ${id} with address ${receipt.transactionHash}`);
+                    transactions.push(`deleted Todo ${id} with transaction hash: ${receipt.transactionHash}`);
 
                     this.setState({transactions, tasks: this.state.tasks.filter(task => task.id != id)})
+                    this.keepScrolled();
                 }
             )
         } catch(e){
@@ -118,9 +119,10 @@ class App extends React.Component {
                 const id = await this.state.contract.methods.taskCount().call();
                 const newTodo = await this.state.contract.methods.tasks(id).call();
                 
-                transactions.push(`created Todo ${id} with address ${receipt.transactionHash}`);
+                transactions.push(`created Todo ${id} with transaction hash: ${receipt.transactionHash}`);
 
                 this.setState({transactions, content: '', tasks: [...this.state.tasks, {...newTodo, change: undefined}]});
+                this.keepScrolled();
             })
         } catch(e){
             console.log(e);
@@ -137,7 +139,7 @@ class App extends React.Component {
                 .once('receipt', (receipt) => {
                     //do stuff with reciept here
                     let hashes = this.state.transactions;
-                    hashes.push(`updated Todo ${todoId} with address ${receipt.transactionHash}`);
+                    hashes.push(`updated Todo ${todoId} with transaction hash: ${receipt.transactionHash}`);
                     let tasks = this.state.tasks;
                     tasks.map(task => {
                         if(task.id == todoId){
